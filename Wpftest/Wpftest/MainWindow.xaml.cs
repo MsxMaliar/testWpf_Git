@@ -15,12 +15,11 @@ using System.Windows.Shapes;
 
 namespace Wpftest
 {
-    delegate void Message();
+    delegate int Message(int n);
 
     public partial class MainWindow : Window
     {
-        Message mes;
-        
+        TestDelegate delTest;
 
         public MainWindow()
         {
@@ -33,11 +32,15 @@ namespace Wpftest
             myTextBlock.SetBinding(TextBlock.TextProperty, binding); // установка привязки для элемента-приемника
             myTextBox.AppendText("szos osoznane");
 
-            mes = Hello;
+            delTest = new TestDelegate(this.Hello);
+
         }
 
-        void Hello() {
-            MessageBox.Show("Hello METANIT.COM");
+        int Hello(int n) {
+            MessageBox.Show("Hello METANIT.COM " + n);
+
+            TestDelegate.testStaticMetod();
+            return (n / 2);
         }
 
         private void checkBox_Checked(object sender, RoutedEventArgs e)
@@ -86,7 +89,7 @@ namespace Wpftest
 
         private void Button_ClickmainVkladka(object sender, RoutedEventArgs e)
         {
-            mes();
+            delTest.DelInfo();
         }
     }
 
@@ -95,5 +98,35 @@ namespace Wpftest
         public string Name { get; set; } = "";
         public string Company { get; set; } = "";
         public override string ToString() => $"{Name} ({Company})";
+
+        
+
+        public Person()
+        {
+        }
+    }
+
+    class TestDelegate
+    {
+        Message Delegate;
+
+        static int n = 0;
+        
+
+        public TestDelegate(Message d)
+        {
+            Delegate = d;
+        }
+
+
+        public void DelInfo()
+        {
+            MessageBox.Show(Delegate(n).ToString() );
+        }
+
+        public static void testStaticMetod()
+        {
+            n ++;
+        }
     }
 }
