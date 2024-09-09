@@ -91,6 +91,22 @@ namespace Wpftest
         {
             delTest.DelInfo();
         }
+
+        void DisplayMessage(Account sender, AccountEventArgs e) => MessageBox.Show(e.Message);
+        void DisplayMessageTest(Account sender, AccountEventArgs e) => MessageBox.Show("e.Message");
+
+        private void Button_ClickmainVkladkaEvent(object sender, RoutedEventArgs e)
+        {
+            Account account = new Account(100);
+            account.Notify += DisplayMessage;   // Добавляем обработчик для события Notify
+            account.Put(20);
+            account.Notify += DisplayMessageTest;
+            account.Take(70);
+            account.Notify -= DisplayMessage;
+            account.Take(180);
+
+            
+        }
     }
 
     public class Person
@@ -127,6 +143,51 @@ namespace Wpftest
         public static void testStaticMetod()
         {
             n ++;
+        }
+    }
+
+    delegate void AccountHandler(string message);
+
+    class AccountEventArgs
+    {
+        // Сообщение
+        public string Message { get; }
+        // Сумма, на которую изменился счет
+        public int Sum { get; }
+        public AccountEventArgs(string message, int sum)
+        {
+            Message = message;
+            Sum = sum;
+        }
+    }
+    class Account
+    {
+        public delegate void AccountHandler(Account sender, AccountEventArgs e);
+        public event AccountHandler Notify;
+
+        public int Sum { get; private set; }
+
+        public Account(int sum) => Sum = sum;
+
+        public void Put(int sum)
+        {
+            Sum += sum;
+
+            if (Notify != null)  Notify(this, new AccountEventArgs($"На счет поступило {sum}", sum));
+        }
+        public void Take(int sum)
+        {
+            if (Sum >= sum)
+            {
+                Sum -= sum;
+
+                if (Notify != null) Notify(this, new AccountEventArgs($"Сумма {sum} снята со счета", sum));
+            }
+            else
+            {
+
+                if (Notify != null)  Notify(this, new AccountEventArgs("Недостаточно денег на счете", sum));
+            }
         }
     }
 }

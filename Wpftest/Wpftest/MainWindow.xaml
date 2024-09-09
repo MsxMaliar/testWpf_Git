@@ -149,8 +149,12 @@
         </TabItem>
 
             <TabItem x:Name="mainVkladka" Header="mainVkladka">
-				<Button x:Name="buttonmainVkladka" Width="60" Height="30" Content="Нажать" Click="Button_ClickmainVkladka" />
-                </TabItem>
+                    <StackPanel>
+                        <Button x:Name="buttonmainVkladka" Width="60" Height="30" Content="Делегат" Click="Button_ClickmainVkladka" />
+
+                        <Button x:Name="buttonmainVkladkaEvent" Width="60" Height="30" Content="івент" Click="Button_ClickmainVkladkaEvent" />
+                    </StackPanel>
+            </TabItem>
         
     </TabControl>
     </StackPanel>
